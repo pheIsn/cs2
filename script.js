@@ -1077,15 +1077,15 @@ document.addEventListener('mousemove', function(e) {
         Math.pow(mouseY - secretCenterY, 2)
     );
 
-    if (secretDistance < 300) {
+    if (secretDistance < 400) {
         const angle = Math.atan2(secretCenterY - mouseY, secretCenterX - mouseX);
-        const moveDistance = (300 - secretDistance) * 2;
+        const moveDistance = (400 - secretDistance) * 3; // Увеличили множитель с 2 до 3
 
         let newRight = window.innerWidth - secretRect.right + Math.cos(angle) * moveDistance;
         let newTop = secretRect.top + Math.sin(angle) * moveDistance;
 
-        newRight = Math.max(10, Math.min(window.innerWidth - secretRect.width - 10, newRight));
-        newTop = Math.max(10, Math.min(window.innerHeight - secretRect.height - 10, newTop));
+        newRight = Math.max(-100, Math.min(window.innerWidth + 100, newRight));
+        newTop = Math.max(-100, Math.min(window.innerHeight + 100, newTop));
 
         secretBtn.style.right = newRight + 'px';
         secretBtn.style.top = newTop + 'px';
