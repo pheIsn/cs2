@@ -25,7 +25,6 @@ window.addEventListener('load', function() {
             setTimeout(() => preloader.remove(), 500);
         }
     }, 2500); // 2.5 секунды
-    updateVisitorCount();
 });
 
 // Анимированный счетчик статистики
@@ -74,9 +73,11 @@ window.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Счетчик посещений при загрузке
+// Запуск анимации счетчика при загрузке
 window.addEventListener('load', function() {
-    updateVisitorCount();
+    setTimeout(() => {
+        animateCounter();
+    }, 1200);
 });
 
 // Языковые переводы
@@ -103,8 +104,7 @@ const translations = {
         discordButton: 'Присоединиться к Discord',
         footerText: '© 2026 CS2 Pro Academy. Все права защищены.',
         footerLink: 'Официальный сайт',
-        viewPlayersBtn: 'Смотреть игроков ↓',
-        visitorCounter: 'Посетитель #'
+        viewPlayersBtn: 'Смотреть игроков ↓'
     },
     en: {
         title: 'CS2 PRO ACADEMY',
@@ -126,8 +126,7 @@ const translations = {
         discordButton: 'Join Discord',
         footerText: '© 2026 CS2 Pro Academy. All rights reserved.',
         footerLink: 'Official Website',
-        viewPlayersBtn: 'View Players ↓',
-        visitorCounter: 'Visitor #'
+        viewPlayersBtn: 'View Players ↓'
     }
 };
 
@@ -198,13 +197,6 @@ function updateLanguage() {
     // Кнопка "Смотреть игроков"
     const viewBtn = document.querySelector('header button');
     if (viewBtn) viewBtn.textContent = t.viewPlayersBtn;
-
-    // Счетчик посетителей (только текст перед числом)
-    const visitorCounter = document.querySelector('.visitor-counter');
-    if (visitorCounter) {
-        const count = document.getElementById('visitorCount').textContent;
-        visitorCounter.innerHTML = `${t.visitorCounter}<span id="visitorCount">${count}</span>`;
-    }
 }
 
 // Загрузка сохраненного языка при старте
@@ -261,81 +253,6 @@ function generateUserFingerprint() {
     }
 
     return 'user_' + Math.abs(hash);
-}
-
-// Публичный счетчик посещений с защитой от фарма
-async function updateVisitorCount() {
-    const counterElement = document.getElementById('visitorCount');
-
-    try {
-        const namespace = 'cs2proacademy-site';
-        const key = 'global-visits';
-
-        // Генерируем уникальный ID пользователя
-        const userId = generateUserFingerprint();
-        const today = new Date().toDateString();
-        const storageKey = `visit_${userId}_${today}`;
-
-        // Проверяем в sessionStorage (сбрасывается при закрытии браузера)
-        const sessionVisited = sessionStorage.getItem(storageKey);
-
-        // Если пользователь еще не заходил в этой сессии сегодня
-        if (!sessionVisited) {
-            const hitUrl = `https://api.countapi.xyz/hit/${namespace}/${key}`;
-            const response = await fetch(hitUrl);
-            const data = await response.json();
-
-            // Отмечаем, что пользователь зашел
-            sessionStorage.setItem(storageKey, 'true');
-
-            if (counterElement && data.value) {
-                animateCounter(counterElement, data.value);
-                console.log(`Новый визит учтен! Всего посещений: ${data.value}`);
-            }
-        } else {
-            // Просто получаем текущее значение
-            const getUrl = `https://api.countapi.xyz/get/${namespace}/${key}`;
-            const response = await fetch(getUrl);
-            const data = await response.json();
-
-            if (counterElement && data.value) {
-                animateCounter(counterElement, data.value);
-                console.log(`Вы уже учтены в этой сессии. Всего посещений: ${data.value}`);
-            }
-        }
-    } catch (error) {
-        console.error('Ошибка загрузки счетчика:', error);
-        if (counterElement) {
-            counterElement.textContent = '---';
-        }
-    }
-}
-
-// Функция анимации счетчика
-function animateCounter(element, targetCount) {
-    if (!element) {
-        console.warn('Element not found for counter animation');
-        return;
-    }
-
-    let currentCount = 0;
-    const duration = 1500;
-    const steps = 60;
-    const increment = targetCount / steps;
-    let step = 0;
-
-    const animate = () => {
-        if (step < steps) {
-            currentCount += increment;
-            element.textContent = Math.floor(currentCount);
-            step++;
-            setTimeout(animate, duration / steps);
-        } else {
-            element.textContent = targetCount;
-        }
-    };
-
-    animate();
 }
 
 // Плавный скролл к карточкам
