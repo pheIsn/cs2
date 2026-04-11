@@ -1,0 +1,7 @@
+node_modules/
+.vercel/
+*.log
+faceit-proxy.js
+faceit-proxy.php
+package.json
+package-lock.json

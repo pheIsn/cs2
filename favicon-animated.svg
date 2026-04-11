@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5865F2;stop-opacity:1">
+        <animate attributeName="stop-color" values="#5865F2;#7289DA;#5865F2" dur="3s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" style="stop-color:#7289DA;stop-opacity:1">
+        <animate attributeName="stop-color" values="#7289DA;#5865F2;#7289DA" dur="3s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+  </defs>
+
+  <!-- Фон -->
+  <rect width="64" height="64" fill="#000000" rx="12"/>
+
+  <!-- CS2 текст с анимацией -->
+  <text x="32" y="28" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="url(#grad1)" text-anchor="middle">
+    CS2
+    <animate attributeName="opacity" values="1;0.7;1" dur="2s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- PRO текст -->
+  <text x="32" y="45" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#ffffff" text-anchor="middle" opacity="0.8">
+    PRO
+  </text>
+
+  <!-- Пульсирующий круг -->
+  <circle cx="32" cy="32" r="28" fill="none" stroke="url(#grad1)" stroke-width="2" opacity="0.3">
+    <animate attributeName="r" values="28;30;28" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite"/>
+  </circle>
+</svg>

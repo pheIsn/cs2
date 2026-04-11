@@ -1,0 +1,2506 @@
+/* Прелоадер с изображением */
+.preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+    transition: opacity 0.5s ease;
+}
+
+.preloader.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.preloader-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.preloader-content img {
+    max-width: 100%;
+    max-height: 100vh;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    animation: fadeInScale 2.5s ease;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.spinner {
+    display: none;
+}
+
+.preloader-content p {
+    color: #666666;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 20px;
+}
+
+/* Плавная прокрутка */
+html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    scroll-padding-top: 80px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Кастомный скроллбар */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+:root {
+    --primary: #ffffff;
+    --primary-dark: #e5e5e5;
+    --secondary: #888888;
+    --accent: #666666;
+    --bg-dark: #000000;
+    --bg-card: rgba(255, 255, 255, 0.02);
+    --text-primary: #ffffff;
+    --text-secondary: #888888;
+    --border: rgba(255, 255, 255, 0.05);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Прогресс-бар загрузки */
+.progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: #ffffff;
+    width: 0%;
+    z-index: 10002;
+    transition: width 0.3s ease;
+}
+
+/* Минималистичный фон */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000000;
+    z-index: -2;
+}
+
+/* Фоновое изображение с параллаксом */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120%;
+    background: url('avatars/изначальный фон.jpg') center center no-repeat;
+    background-size: cover;
+    opacity: 0.25;
+    z-index: -1;
+    transition: opacity 0.8s ease;
+    transform: translateY(calc(var(--parallax-y, 0px) * -1));
+    will-change: transform;
+}
+
+body.cringe-mode::after {
+    background: url('avatars/задний фон при кнопки.jpg') center center no-repeat;
+    background-size: cover;
+    opacity: 0.25;
+}
+
+/* Частицы - canvas */
+#particleCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Прелоадер - быстрый */
+.preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+    transition: opacity 0.2s ease;
+}
+
+.preloader.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.preloader-content {
+    text-align: center;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin-loader 0.8s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin-loader {
+    to { transform: rotate(360deg); }
+}
+
+.preloader-content p {
+    color: var(--text-secondary);
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Стартовый экран */
+.intro-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    cursor: pointer;
+    transition: opacity 0.8s ease;
+}
+
+.intro-screen::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(30px);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.intro-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.intro-content {
+    position: relative;
+    z-index: 1;
+}
+
+.intro-title {
+    font-size: 64px;
+    font-weight: 300;
+    letter-spacing: 8px;
+    color: #ffffff;
+    text-transform: uppercase;
+}
+
+/* Печатающийся текст - убран */
+.typing-text {
+    overflow: visible;
+    border-right: none;
+    white-space: normal;
+}
+
+/* Кнопка переключения языка */
+.language-switcher {
+    position: fixed;
+    top: 20px;
+    right: 130px;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.language-switcher:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+.language-switcher:active {
+    transform: translateY(0);
+}
+
+body.cringe-mode .language-switcher {
+    animation: spin 2s infinite linear, mega-pulse 0.5s infinite;
+    background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00);
+    border-color: #ff00ff;
+}
+
+/* Кнопки управления */
+.secret-btn, .share-site-btn {
+    position: fixed;
+    top: 20px;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.secret-btn {
+    right: 20px;
+}
+
+.share-site-btn {
+    right: 75px;
+    color: #ffffff;
+}
+
+.secret-btn:hover, .share-site-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+.secret-btn:active, .share-site-btn:active {
+    transform: translateY(0);
+}
+
+body.cringe-mode .secret-btn {
+    animation: spin 2s infinite linear, mega-pulse 0.5s infinite;
+    background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00);
+    border-color: #ff00ff;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes mega-pulse {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.15) rotate(180deg); }
+}
+
+/* Счетчик посещений */
+.visitor-counter {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0;
+    font-size: 12px;
+    color: #666666;
+    letter-spacing: 1px;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.visitor-counter:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.visitor-counter span {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+body.cringe-mode .visitor-counter {
+    display: none;
+}
+
+body.cringe-mode::after {
+    background: url('avatars/задний фон при кнопки.jpg') center center no-repeat;
+    background-size: cover;
+    opacity: 0.4;
+}
+body, * {
+    cursor: url('cursors/Normal.cur'), auto !important;
+}
+
+a, .footer-link {
+    cursor: url('cursors/Link.cur'), pointer !important;
+}
+
+button:not(header button), .player-card, .discord-button {
+    cursor: url('cursors/Handwrite.cur'), pointer !important;
+}
+
+.social-link, .share-btn, .share-site-btn {
+    cursor: url('cursors/Alternate.cur'), pointer !important;
+}
+
+.secret-btn, .music-control, .visitor-counter {
+    cursor: url('cursors/Help.ani'), pointer !important;
+}
+
+/* Заголовок и кнопка "Смотреть игроков" */
+.title, header button {
+    cursor: url('cursors/Alternate.cur'), pointer !important;
+}
+
+/* Картинки и Steam */
+.player-avatar img, .modal-avatar img, .steam-link, .steam-link img {
+    cursor: url('cursors/Link.cur'), pointer !important;
+}
+
+/* Крестик закрытия */
+.close {
+    cursor: url('cursors/Link.cur'), pointer !important;
+}
+
+/* Текст - только параграфы достижений */
+.player-achievements p, .modal-achievements p {
+    cursor: url('cursors/Text.cur'), default !important;
+}
+
+/* Курсор при загрузке - отключен */
+.preloader, .preloader * {
+    cursor: url('cursors/Normal.cur'), auto !important;
+}
+
+/* Курсор недоступно */
+[disabled], .disabled {
+    cursor: url('cursors/Unavailable.cur'), not-allowed !important;
+}
+
+/* Курсор перемещение */
+.modal-content {
+    cursor: url('cursors/Move.cur'), move !important;
+}
+
+/* Курсор точность */
+#particleCanvas {
+    cursor: url('cursors/Precision.cur'), crosshair !important;
+}
+
+/* Кнопка наверх */
+.scroll-top {
+    cursor: url('cursors/up.cur'), pointer !important;
+}
+
+/* Слайдер громкости */
+.volume-slider {
+    cursor: url('cursors/VerticalResize.cur'), ns-resize !important;
+}
+
+body.cringe-mode * {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><text x="0" y="20" font-size="20">🤡</text></svg>') 12 12, auto !important;
+}
+
+body.cringe-mode a,
+body.cringe-mode button,
+body.cringe-mode .player-card,
+body.cringe-mode .social-link,
+body.cringe-mode .share-btn,
+body.cringe-mode .secret-btn,
+body.cringe-mode .music-control {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><text x="0" y="20" font-size="20">💀</text></svg>') 12 12, pointer !important;
+}
+
+/* Улучшенная панель управления музыкой */
+.music-control {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.music-control:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.music-control:active {
+    transform: scale(0.95);
+}
+
+.music-icon {
+    font-size: 20px;
+}
+
+.volume-panel {
+    position: absolute;
+    bottom: 55px;
+    left: 0;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    min-width: 180px;
+}
+
+.volume-panel.show {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+}
+
+.volume-slider {
+    width: 140px;
+    height: 2px;
+    border-radius: 0;
+    background: rgba(255, 255, 255, 0.1);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 0;
+    background: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 0;
+    background: #ffffff;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.volume-slider::-moz-range-thumb:hover {
+    transform: scale(1.2);
+}
+
+.volume-value {
+    font-size: 12px;
+    font-weight: 400;
+    color: #ffffff;
+    letter-spacing: 1px;
+}
+
+body.cringe-mode .music-control {
+    display: flex;
+    animation: music-pulse 1s infinite;
+    background: linear-gradient(45deg, #ff00ff, #00ffff);
+    border-color: #ff00ff;
+}
+
+@keyframes music-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+body.cringe-mode .volume-panel {
+    background: rgba(255, 0, 255, 0.2);
+    border-color: #ff00ff;
+}
+
+body.cringe-mode .volume-slider::-webkit-slider-thumb {
+    background: #ffff00;
+}
+
+body.cringe-mode .volume-slider::-moz-range-thumb {
+    background: #ffff00;
+}
+
+body.cringe-mode .volume-value {
+    color: #ffff00;
+}
+
+/* Кнопка наверх минимализм */
+.scroll-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.scroll-top.visible {
+    opacity: 1;
+    pointer-events: all;
+    animation: fadeInUp 0.3s ease;
+}
+
+.scroll-top:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+}
+
+.scroll-top:active {
+    transform: translateY(-1px);
+}
+
+.scroll-top svg {
+    color: #ffffff;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 60px;
+    padding: 100px 0 40px;
+    position: relative;
+    z-index: 100;
+    background: transparent;
+}
+
+header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 0;
+}
+
+/* Анимированная статистика команды */
+.team-stats {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    margin: 30px 0 20px;
+}
+
+.stat-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.stat-number {
+    font-size: 36px;
+    font-weight: 300;
+    color: #ffffff;
+    letter-spacing: 2px;
+}
+
+.stat-label {
+    font-size: 11px;
+    font-weight: 400;
+    color: #666666;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+body.cringe-mode .stat-number {
+    animation: stat-crazy 0.5s infinite;
+    color: #ff00ff;
+}
+
+@keyframes stat-crazy {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* Раздел О команде */
+.about-section {
+    max-width: 800px;
+    margin: 0 auto 80px;
+    padding: 40px 40px 60px;
+    text-align: center;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease forwards;
+    animation-delay: 0.3s;
+}
+
+.section-title {
+    font-size: 32px;
+    font-weight: 300;
+    letter-spacing: 4px;
+    color: #ffffff;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.players-title {
+    text-align: center;
+    font-weight: 600;
+    margin: 60px 0 40px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease;
+}
+
+.players-title.animated {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.about-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.about-text {
+    font-size: 16px;
+    line-height: 1.9;
+    color: #cccccc;
+    font-weight: 400;
+}
+
+.about-achievements {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.achievement-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.achievement-icon {
+    font-size: 32px;
+}
+
+.achievement-text {
+    font-size: 12px;
+    color: #999999;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+body.cringe-mode .section-title {
+    animation: glitch 1s infinite;
+    color: #ff00ff;
+}
+
+body.cringe-mode .about-text {
+    color: #ffff00;
+}
+
+.about-text-container.serious {
+    display: block;
+}
+
+.about-text-container.cringe {
+    display: none;
+}
+
+body.cringe-mode .about-text-container.serious {
+    display: none;
+}
+
+body.cringe-mode .about-text-container.cringe {
+    display: block;
+}
+
+body.cringe-mode .about-text-container.cringe .about-text {
+    color: #ffff00;
+    font-weight: 600;
+    text-shadow: 0 0 10px #ffff00;
+    animation: text-glitch 0.3s infinite;
+}
+
+body.cringe-mode .about-text-container.cringe .achievement-text {
+    color: #ff00ff;
+    animation: bounce 1s infinite;
+}
+
+body.cringe-mode .about-text-container.cringe .achievement-icon {
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.title {
+    font-size: 48px;
+    font-weight: 300;
+    letter-spacing: 6px;
+    color: #ffffff;
+    margin-bottom: 12px;
+    line-height: 1.1;
+    text-transform: uppercase;
+    transition: letter-spacing 0.3s ease;
+}
+
+.title:hover {
+    letter-spacing: 8px;
+}
+
+.title:hover {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5),
+                 0 0 40px rgba(255, 255, 255, 0.3);
+    letter-spacing: 8px;
+}
+
+body.cringe-mode .title {
+    animation: glitch 1s infinite;
+    text-shadow: 2px 2px 0 #ff00ff, -2px -2px 0 #00ffff;
+    -webkit-text-fill-color: #f5f5f7;
+}
+
+@keyframes glitch {
+    0%, 100% { transform: translate(0); }
+    25% { transform: translate(-1px, 1px); }
+    50% { transform: translate(1px, -1px); }
+    75% { transform: translate(-1px, -1px); }
+}
+
+.subtitle {
+    font-size: 14px;
+    font-weight: 400;
+    color: #999999;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+body.cringe-mode .subtitle {
+    color: #ff0000;
+    animation: blink 0.5s infinite;
+    font-size: 28px;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.5; }
+}
+
+.players-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding-bottom: 100px;
+}
+
+/* Карточки игроков - минимализм */
+.player-card {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 0;
+    padding: 0;
+    backdrop-filter: blur(10px);
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+    position: relative;
+}
+
+.player-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+}
+
+.player-card::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 1px;
+    background: linear-gradient(90deg, #ffffff, rgba(255,255,255,0.5));
+    transition: width 0.5s ease;
+}
+
+.player-card:hover::after {
+    width: 100%;
+}
+
+.player-card:nth-child(1) { animation-delay: 0.1s; }
+.player-card:nth-child(2) { animation-delay: 0.2s; }
+.player-card:nth-child(3) { animation-delay: 0.3s; }
+.player-card:nth-child(4) { animation-delay: 0.4s; }
+.player-card:nth-child(5) { animation-delay: 0.5s; }
+
+/* Улучшенная анимация появления карточек */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Плавная анимация для частиц */
+#particleCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+/* Улучшенный эффект при клике на карточку */
+.player-card:active {
+    transform: translateX(2px) scale(0.99);
+}
+
+/* Минимальный эффект при наведении */
+.player-card:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-bottom-color: rgba(255, 255, 255, 0.3);
+    transform: translateX(4px);
+    box-shadow: 0 0 30px rgba(88, 101, 242, 0.4),
+                0 0 60px rgba(88, 101, 242, 0.2),
+                inset 0 0 20px rgba(88, 101, 242, 0.1);
+    border-left: 2px solid rgba(88, 101, 242, 0.6);
+}
+
+/* Волновой эффект при клике */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0);
+    animation: ripple-animation 0.6s ease-out;
+    pointer-events: none;
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+body.cringe-mode .player-card {
+    animation: shake 2s infinite;
+    border: 2px solid #ff00ff;
+    background: rgba(255, 0, 255, 0.1);
+    box-shadow: 0 0 30px rgba(255, 0, 255, 0.3);
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateY(0); }
+    25% { transform: translateY(-2px); }
+    75% { transform: translateY(2px); }
+}
+
+.player-content {
+    display: flex;
+    gap: 40px;
+    padding: 40px;
+    align-items: flex-start;
+}
+
+/* Аватарка минимализм */
+.player-avatar {
+    flex-shrink: 0;
+    width: 160px;
+    height: 160px;
+    border-radius: 0;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.player-avatar::after {
+    content: 'Подробнее →';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(0deg, rgba(0,0,0,0.9), transparent);
+    color: #ffffff;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.player-card:hover .player-avatar::after {
+    opacity: 1;
+}
+
+.player-card:hover .player-avatar {
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.avatar-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.player-avatar:hover .avatar-overlay {
+    opacity: 1;
+}
+
+.avatar-overlay span {
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.player-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+    opacity: 1;
+}
+
+.player-card:hover .player-avatar img {
+    transform: scale(1.05);
+}
+
+body.cringe-mode .player-avatar {
+    border-color: #ff00ff;
+    animation: avatar-shake 1.5s infinite;
+    box-shadow: 0 0 20px #ff00ff;
+}
+
+@keyframes avatar-shake {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-1deg); }
+    75% { transform: rotate(1deg); }
+}
+
+body.cringe-mode .player-avatar img {
+    filter: hue-rotate(180deg) saturate(2);
+}
+
+.player-info {
+    flex: 1;
+}
+
+.player-name {
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 8px;
+    background: linear-gradient(90deg, #ffffff, #888888);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.player-card:hover .player-name {
+    background: linear-gradient(90deg, #ffffff, #ffffff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+body.cringe-mode .player-name {
+    color: #ff00ff;
+    animation: bounce 1s infinite;
+    text-shadow: 2px 2px 0 #00ffff;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+.player-role {
+    font-size: 14px;
+    font-weight: 400;
+    color: #999999;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Статистика минимализм */
+.player-stats {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 24px;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 20px 0;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.stat-value {
+    font-size: 28px;
+    font-weight: 300;
+    color: #ffffff;
+}
+
+.stat-label {
+    font-size: 11px;
+    font-weight: 400;
+    color: #999999;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+body.cringe-mode .player-stats {
+    background: rgba(255, 0, 255, 0.1);
+    border-color: #ff00ff;
+}
+
+body.cringe-mode .stat-value {
+    -webkit-text-fill-color: #ffff00;
+    animation: stat-pulse 1s infinite;
+}
+
+@keyframes stat-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.player-achievements {
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.player-achievements p {
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #cccccc;
+    line-height: 1.8;
+}
+
+.player-achievements.serious {
+    display: block;
+}
+
+.player-achievements.cringe {
+    display: none;
+}
+
+body.cringe-mode .player-achievements.serious {
+    display: none;
+}
+
+body.cringe-mode .player-achievements.cringe {
+    display: block;
+}
+
+body.cringe-mode .player-achievements.cringe p {
+    color: #f5f5f7;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* Социальные ссылки минимализм */
+.social-links {
+    display: flex;
+    gap: 8px;
+}
+
+.social-link, .share-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 0;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666666;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.steam-link img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    filter: brightness(0.7);
+    transition: filter 0.3s ease;
+}
+
+.steam-link:hover img {
+    filter: brightness(1);
+}
+
+.share-btn {
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #666666;
+}
+
+.social-link::before, .share-btn::before {
+    display: none;
+}
+
+.social-link:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.share-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.social-link svg, .share-btn svg {
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s ease;
+}
+
+.social-link:hover svg, .share-btn:hover svg {
+    transform: scale(1.1);
+}
+
+body.cringe-mode .social-link, body.cringe-mode .share-btn {
+    background: rgba(255, 0, 255, 0.2);
+    border-color: #ff00ff;
+    animation: social-bounce 1s infinite;
+}
+
+body.cringe-mode .social-link:hover, body.cringe-mode .share-btn:hover {
+    background: rgba(255, 0, 255, 0.4);
+    color: #ffff00;
+}
+
+@keyframes social-bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Модальное окно минимализм */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: rgba(0, 0, 0, 0.98);
+    backdrop-filter: blur(40px);
+    border-radius: 0;
+    padding: 50px;
+    max-width: 800px;
+    max-height: 85vh;
+    overflow-y: auto;
+    width: 90%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    animation: slideUp 0.4s ease;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+body.cringe-mode .modal {
+    background-color: rgba(0, 0, 0, 0.9);
+    animation: fadeIn 0.3s ease, hue-rotate 10s linear infinite;
+}
+
+body.cringe-mode .modal-content {
+    background: rgba(20, 0, 20, 0.95);
+    border: 2px solid #ff00ff;
+    box-shadow: 0 0 40px rgba(255, 0, 255, 0.6),
+                0 20px 60px rgba(0, 0, 0, 0.8);
+    animation: slideUp 0.4s ease, modal-shake 0.5s infinite;
+}
+
+@keyframes modal-shake {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-2px) rotate(-0.5deg); }
+    75% { transform: translateY(2px) rotate(0.5deg); }
+}
+
+body.cringe-mode .modal-info h2 {
+    color: #ff00ff;
+    text-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff;
+    animation: glitch 1s infinite;
+}
+
+body.cringe-mode .modal-role {
+    background: rgba(255, 0, 255, 0.2);
+    border-left-color: #ff00ff;
+    color: #ffff00;
+    animation: role-pulse 1s infinite;
+}
+
+@keyframes role-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+body.cringe-mode .modal-avatar {
+    border: 2px solid #ff00ff;
+    box-shadow: 0 0 30px rgba(255, 0, 255, 0.6);
+    animation: avatar-crazy 2s infinite;
+}
+
+@keyframes avatar-crazy {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    25% { transform: rotate(-2deg) scale(1.02); }
+    75% { transform: rotate(2deg) scale(0.98); }
+}
+
+body.cringe-mode .modal-avatar img {
+    filter: hue-rotate(180deg) saturate(2) contrast(1.2);
+}
+
+body.cringe-mode .modal-achievements p {
+    color: #ffff00;
+    text-shadow: 0 0 10px #ffff00;
+    animation: text-glitch 0.3s infinite;
+}
+
+@keyframes text-glitch {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(2px); }
+}
+
+body.cringe-mode .player-stats-graphs {
+    background: rgba(255, 0, 255, 0.1);
+    border-color: #ff00ff;
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+}
+
+body.cringe-mode .stat-graph-fill {
+    background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00);
+    animation: rainbow-flow 2s linear infinite;
+}
+
+@keyframes rainbow-flow {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+}
+
+body.cringe-mode .stat-graph-label {
+    color: #ff00ff;
+}
+
+body.cringe-mode .stat-graph-value {
+    color: #ffff00;
+    animation: value-bounce 0.5s infinite;
+}
+
+@keyframes value-bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+body.cringe-mode .close {
+    color: #ff00ff;
+    text-shadow: 0 0 10px #ff00ff;
+    animation: close-spin 2s linear infinite;
+}
+
+@keyframes close-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 32px;
+    font-weight: 200;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    line-height: 1;
+}
+
+.close:hover {
+    color: #666666;
+    transform: rotate(90deg);
+}
+
+.modal-body {
+    display: flex;
+    gap: 50px;
+    align-items: flex-start;
+}
+
+.modal-avatar {
+    flex-shrink: 0;
+    width: 280px;
+    height: 280px;
+    border-radius: 0;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.modal-info {
+    flex: 1;
+}
+
+.modal-info h2 {
+    font-size: 36px;
+    font-weight: 300;
+    margin-bottom: 16px;
+    color: #ffffff;
+    letter-spacing: 2px;
+}
+
+.modal-role {
+    font-size: 15px;
+    font-weight: 500;
+    color: #5865F2;
+    margin-bottom: 32px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 8px 16px;
+    background: rgba(88, 101, 242, 0.1);
+    border-left: 3px solid #5865F2;
+    display: inline-block;
+}
+
+.modal-achievements {
+    line-height: 2;
+}
+
+.modal-achievements p {
+    font-size: 16px;
+    font-weight: 400;
+    color: #cccccc;
+    margin-bottom: 12px;
+}
+
+/* FACEIT статистика */
+.faceit-stats {
+    margin: 20px 0 30px;
+    padding: 20px;
+    background: rgba(255, 102, 0, 0.05);
+    border: 1px solid rgba(255, 102, 0, 0.2);
+    border-radius: 8px;
+}
+
+.faceit-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 102, 0, 0.2);
+}
+
+.faceit-logo {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.faceit-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ff6600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.faceit-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.faceit-stat-item {
+    text-align: center;
+}
+
+.faceit-stat-label {
+    font-size: 11px;
+    color: #999999;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.faceit-stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ff6600;
+}
+
+body.cringe-mode .faceit-stats {
+    background: rgba(255, 0, 255, 0.1);
+    border-color: #ff00ff;
+    animation: faceit-shake 0.5s infinite;
+}
+
+@keyframes faceit-shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
+}
+
+body.cringe-mode .faceit-title {
+    color: #ff00ff;
+    animation: glitch 1s infinite;
+}
+
+body.cringe-mode .faceit-stat-value {
+    color: #ffff00;
+    animation: value-bounce 0.5s infinite;
+}
+
+body.cringe-mode .faceit-stat-label {
+    color: #ff00ff;
+}
+
+/* Статистические графики */
+.player-stats-graphs {
+    margin: 30px 0;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-graph {
+    margin-bottom: 20px;
+}
+
+.stat-graph:last-child {
+    margin-bottom: 0;
+}
+
+.stat-graph-label {
+    font-size: 12px;
+    color: #999999;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-graph-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.stat-graph-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #5865F2, #7289DA);
+    border-radius: 4px;
+    transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px rgba(88, 101, 242, 0.5);
+}
+
+.stat-graph-value {
+    font-size: 14px;
+    color: #5865F2;
+    margin-top: 6px;
+    font-weight: 600;
+}
+
+/* Улучшенный эффект для падающих эмодзи */
+@keyframes fall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+body.cringe-mode {
+    animation: hue-rotate 10s linear infinite;
+}
+
+@keyframes hue-rotate {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+}
+
+/* Футер */
+.footer {
+    text-align: center;
+    padding: 40px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 60px;
+}
+
+.footer-text {
+    font-size: 12px;
+    color: #666666;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+
+.footer-link {
+    color: #888888;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+    color: #ffffff;
+}
+
+.footer-discord {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.discord-text {
+    font-size: 14px;
+    color: #cccccc;
+    letter-spacing: 0.5px;
+    text-align: center;
+}
+
+.discord-button {
+    padding: 10px 24px;
+    background: rgba(88, 101, 242, 0.15);
+    border: 1px solid rgba(88, 101, 242, 0.4);
+    border-radius: 6px;
+    color: #5865F2;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.discord-button:hover {
+    background: rgba(88, 101, 242, 0.25);
+    border-color: rgba(88, 101, 242, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(88, 101, 242, 0.3);
+}
+
+body.cringe-mode .footer {
+    border-top-color: #ff00ff;
+    animation: footer-pulse 1s infinite;
+}
+
+body.cringe-mode .footer-text {
+    color: #ffff00;
+}
+
+/* Discord призыв к действию */
+.discord-cta {
+    max-width: 1000px;
+    margin: 80px auto;
+    padding: 80px 60px;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(88, 101, 242, 0.25), rgba(114, 137, 218, 0.15));
+    border: 3px solid rgba(88, 101, 242, 0.6);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.8s ease;
+    box-shadow: 0 0 60px rgba(88, 101, 242, 0.4),
+                inset 0 0 40px rgba(88, 101, 242, 0.1);
+}
+
+.discord-cta::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(88, 101, 242, 0.2) 0%, transparent 70%);
+    animation: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 1; }
+}
+
+.discord-cta-content {
+    position: relative;
+    z-index: 1;
+}
+
+.discord-cta-title {
+    font-size: 48px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 25px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px rgba(88, 101, 242, 0.8),
+                 0 0 40px rgba(88, 101, 242, 0.5);
+}
+
+.discord-cta-text {
+    font-size: 22px;
+    color: #ffffff;
+    margin-bottom: 40px;
+    line-height: 1.6;
+    font-weight: 500;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.discord-cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px 50px;
+    background: linear-gradient(135deg, #5865F2, #7289DA);
+    border: none;
+    border-radius: 12px;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(88, 101, 242, 0.6),
+                0 0 40px rgba(88, 101, 242, 0.4);
+    animation: button-pulse 2s ease-in-out infinite;
+}
+
+@keyframes button-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.discord-cta-button:hover {
+    transform: translateY(-5px) scale(1.08);
+    box-shadow: 0 15px 40px rgba(88, 101, 242, 0.8),
+                0 0 60px rgba(88, 101, 242, 0.6);
+    background: linear-gradient(135deg, #7289DA, #5865F2);
+}
+
+.discord-cta-button svg {
+    width: 28px;
+    height: 28px;
+}
+
+body.cringe-mode .discord-cta {
+    background: linear-gradient(135deg, rgba(255, 0, 255, 0.3), rgba(255, 255, 0, 0.2));
+    border-color: #ff00ff;
+    animation: shake 2s infinite, fadeInUp 0.8s ease;
+    box-shadow: 0 0 80px rgba(255, 0, 255, 0.6);
+}
+
+body.cringe-mode .discord-cta-title {
+    color: #ff00ff;
+    animation: glitch 1s infinite;
+    text-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff;
+}
+
+body.cringe-mode .discord-cta-text {
+    color: #ffff00;
+    text-shadow: 0 0 10px #ffff00;
+}
+
+body.cringe-mode .discord-cta-button {
+    background: linear-gradient(135deg, #ff00ff, #00ffff);
+    animation: rainbow 2s linear infinite, button-pulse 2s ease-in-out infinite;
+    box-shadow: 0 10px 40px rgba(255, 0, 255, 0.8);
+}
+
+@keyframes rainbow {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+}
+
+/* Специфичные стили для разных устройств */
+
+/* Стили для ПК */
+body.desktop-device {
+    /* Полный функционал для ПК */
+}
+
+body.desktop-device .player-card:hover {
+    transform: translateX(4px);
+}
+
+/* Стили для планшетов */
+body.tablet-device .player-card {
+    padding: 0;
+}
+
+body.tablet-device .discord-cta {
+    padding: 50px 30px;
+}
+
+/* Стили для мобильных телефонов */
+body.mobile-device {
+    /* Оптимизация для мобильных */
+}
+
+body.mobile-device .player-card:hover {
+    transform: none;
+}
+
+body.mobile-device .discord-cta {
+    padding: 30px 15px;
+    margin: 30px auto;
+}
+
+body.mobile-device .discord-cta-title {
+    font-size: 24px;
+}
+
+body.mobile-device .discord-cta-text {
+    font-size: 14px;
+}
+
+body.mobile-device .discord-cta-button {
+    padding: 12px 24px;
+    font-size: 14px;
+}
+
+body.mobile-device .title {
+    font-size: 28px;
+}
+
+body.mobile-device .player-avatar {
+    width: 180px;
+    height: 180px;
+}
+
+body.mobile-device .modal-content {
+    padding: 30px 15px;
+    max-height: 90vh;
+}
+
+body.mobile-device .player-stats-graphs {
+    padding: 10px;
+}
+
+/* Адаптив для планшетов */
+@media (max-width: 1024px) {
+    .container {
+        max-width: 100%;
+        padding: 0 30px;
+    }
+
+    .title {
+        font-size: 42px;
+        letter-spacing: 5px;
+    }
+
+    .player-content {
+        gap: 30px;
+        padding: 35px;
+    }
+
+    /* Discord CTA */
+    .discord-cta {
+        padding: 60px 40px;
+        margin: 60px auto;
+    }
+
+    .discord-cta-title {
+        font-size: 40px;
+    }
+
+    .discord-cta-text {
+        font-size: 20px;
+    }
+}
+
+/* Адаптив для больших телефонов и маленьких планшетов */
+@media (max-width: 768px) {
+    /* Фон для мобильных */
+    body::after {
+        background-size: cover;
+        background-position: center center;
+        opacity: 0.15;
+    }
+
+    .container {
+        padding: 0 20px;
+    }
+
+    header {
+        padding: 80px 0 30px;
+        margin-bottom: 40px;
+    }
+
+    .title {
+        font-size: 32px;
+        letter-spacing: 4px;
+    }
+
+    .title:hover {
+        letter-spacing: 5px;
+    }
+
+    .intro-title {
+        font-size: 36px;
+        letter-spacing: 5px;
+    }
+
+    .subtitle {
+        font-size: 12px;
+        letter-spacing: 2px;
+    }
+
+    body.cringe-mode .subtitle {
+        font-size: 22px;
+    }
+
+    header button {
+        font-size: 11px;
+        padding: 8px 16px;
+        margin-top: 16px;
+    }
+
+    /* Discord CTA для мобильных */
+    .discord-cta {
+        padding: 40px 20px;
+        margin: 40px auto;
+        border-width: 2px;
+    }
+
+    .discord-cta-title {
+        font-size: 28px;
+        margin-bottom: 20px;
+        letter-spacing: 2px;
+    }
+
+    .discord-cta-text {
+        font-size: 16px;
+        margin-bottom: 30px;
+    }
+
+    .discord-cta-button {
+        padding: 14px 30px;
+        font-size: 16px;
+        gap: 10px;
+    }
+
+    .discord-cta-button svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .players-list {
+        gap: 20px;
+        padding-bottom: 80px;
+    }
+
+    .player-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 30px 20px;
+        gap: 24px;
+    }
+
+    .player-avatar {
+        width: 200px;
+        height: 200px;
+    }
+
+    .player-info {
+        width: 100%;
+    }
+
+    .player-name {
+        font-size: 22px;
+    }
+
+    .player-role {
+        font-size: 12px;
+    }
+
+    .player-achievements p {
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    body.cringe-mode .player-achievements.cringe p {
+        font-size: 15px;
+    }
+
+    .player-stats {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 24px;
+        padding: 18px 0;
+    }
+
+    .stat-value {
+        font-size: 26px;
+    }
+
+    .stat-label {
+        font-size: 10px;
+    }
+
+    .social-links {
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .social-link, .share-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .modal-content {
+        padding: 40px 25px;
+        width: 90%;
+        max-width: 600px;
+    }
+
+    .modal-body {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 30px;
+    }
+
+    .modal-avatar {
+        width: 240px;
+        height: 240px;
+    }
+
+    .modal-info h2 {
+        font-size: 28px;
+        letter-spacing: 1px;
+    }
+
+    .modal-role {
+        font-size: 12px;
+        margin-bottom: 26px;
+    }
+
+    .modal-achievements p {
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    /* Статистические графики на мобильных */
+    .player-stats-graphs {
+        padding: 15px;
+        margin: 20px 0;
+    }
+
+    .stat-graph-label {
+        font-size: 11px;
+    }
+
+    .stat-graph-value {
+        font-size: 12px;
+    }
+
+    .close {
+        top: 15px;
+        right: 20px;
+        font-size: 30px;
+    }
+
+    .scroll-top {
+        bottom: 20px;
+        right: 20px;
+        width: 42px;
+        height: 42px;
+    }
+
+    .music-control {
+        bottom: 20px;
+        left: 20px;
+        width: 42px;
+        height: 42px;
+    }
+
+    .music-icon {
+        font-size: 19px;
+    }
+
+    .volume-panel {
+        bottom: 52px;
+        padding: 18px;
+        min-width: 170px;
+    }
+
+    .volume-slider {
+        width: 130px;
+    }
+
+    .secret-btn, .share-site-btn {
+        width: 42px;
+        height: 42px;
+        font-size: 19px;
+        top: 18px;
+    }
+
+    .secret-btn {
+        right: 18px;
+    }
+
+    .share-site-btn {
+        right: 70px;
+    }
+
+    .visitor-counter {
+        top: 18px;
+        left: 18px;
+        padding: 7px 14px;
+        font-size: 11px;
+    }
+
+    /* Прелоадер на мобильных */
+    .preloader-content img {
+        object-fit: contain;
+        max-height: 90vh;
+    }
+}
+
+/* Адаптив для телефонов */
+@media (max-width: 480px) {
+    .container {
+        padding: 0 16px;
+    }
+
+    header {
+        padding: 70px 0 25px;
+        margin-bottom: 30px;
+    }
+
+    .title {
+        font-size: 24px;
+        letter-spacing: 3px;
+    }
+
+    .title:hover {
+        letter-spacing: 4px;
+    }
+
+    .intro-title {
+        font-size: 28px;
+        letter-spacing: 4px;
+    }
+
+    .subtitle {
+        font-size: 11px;
+        letter-spacing: 2px;
+    }
+
+    body.cringe-mode .subtitle {
+        font-size: 18px;
+    }
+
+    header button {
+        font-size: 10px;
+        padding: 7px 14px;
+        margin-top: 14px;
+    }
+
+    .players-list {
+        gap: 16px;
+        padding-bottom: 70px;
+    }
+
+    .player-content {
+        padding: 24px 16px;
+        gap: 20px;
+    }
+
+    .player-avatar {
+        width: 160px;
+        height: 160px;
+    }
+
+    .player-name {
+        font-size: 20px;
+    }
+
+    .player-role {
+        font-size: 11px;
+    }
+
+    .player-achievements p {
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    body.cringe-mode .player-achievements.cringe p {
+        font-size: 14px;
+    }
+
+    .player-stats {
+        gap: 20px;
+        padding: 16px 0;
+    }
+
+    .stat-value {
+        font-size: 24px;
+    }
+
+    .stat-label {
+        font-size: 9px;
+    }
+
+    .social-links {
+        gap: 6px;
+    }
+
+    .social-link, .share-btn {
+        width: 34px;
+        height: 34px;
+    }
+
+    .modal-content {
+        padding: 30px 20px;
+        width: 92%;
+        max-width: 400px;
+    }
+
+    .modal-body {
+        gap: 24px;
+    }
+
+    .modal-avatar {
+        width: 180px;
+        height: 180px;
+    }
+
+    .modal-info h2 {
+        font-size: 22px;
+        letter-spacing: 0.5px;
+    }
+
+    .modal-role {
+        font-size: 11px;
+        margin-bottom: 22px;
+    }
+
+    .modal-achievements p {
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .close {
+        top: 12px;
+        right: 16px;
+        font-size: 28px;
+    }
+
+    .scroll-top {
+        bottom: 16px;
+        right: 16px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .scroll-top svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .music-control {
+        bottom: 16px;
+        left: 16px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .music-icon {
+        font-size: 18px;
+    }
+
+    .volume-panel {
+        bottom: 48px;
+        padding: 16px;
+        min-width: 150px;
+    }
+
+    .volume-slider {
+        width: 110px;
+    }
+
+    .volume-value {
+        font-size: 11px;
+    }
+
+    .secret-btn, .share-site-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+        top: 16px;
+    }
+
+    .secret-btn {
+        right: 16px;
+    }
+
+    .share-site-btn {
+        right: 64px;
+    }
+
+    .share-site-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .visitor-counter {
+        top: 16px;
+        left: 16px;
+        padding: 6px 12px;
+        font-size: 10px;
+    }
+}
+
+/* Адаптив для очень маленьких телефонов */
+@media (max-width: 360px) {
+    .title {
+        font-size: 20px;
+        letter-spacing: 2px;
+    }
+
+    .intro-title {
+        font-size: 24px;
+        letter-spacing: 3px;
+    }
+
+    .player-content {
+        padding: 20px 12px;
+    }
+
+    .player-avatar {
+        width: 140px;
+        height: 140px;
+    }
+
+    .player-name {
+        font-size: 18px;
+    }
+
+    .player-achievements p {
+        font-size: 11px;
+    }
+
+    body.cringe-mode .player-achievements.cringe p {
+        font-size: 13px;
+    }
+
+    .modal-avatar {
+        width: 150px;
+        height: 150px;
+    }
+
+    .modal-info h2 {
+        font-size: 20px;
+    }
+
+    .modal-content {
+        padding: 24px 16px;
+    }
+}
