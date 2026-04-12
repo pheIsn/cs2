@@ -1,4 +1,4 @@
-/* Прелоадер с изображением */
+/* Красивый прелоадер */
 .preloader {
     position: fixed;
     top: 0;
@@ -11,6 +11,23 @@
     justify-content: center;
     z-index: 10001;
     transition: opacity 0.5s ease;
+    overflow: hidden;
+}
+
+.preloader::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(88, 101, 242, 0.15) 0%, transparent 50%);
+    animation: preloaderGlow 3s ease-in-out infinite;
+}
+
+@keyframes preloaderGlow {
+    0%, 100% { transform: scale(0.8); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 0.8; }
 }
 
 .preloader.hidden {
@@ -24,39 +41,88 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position: relative;
+    z-index: 1;
 }
 
-.preloader-content img {
-    max-width: 100%;
-    max-height: 100vh;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    animation: fadeInScale 2.5s ease;
-}
-
-@keyframes fadeInScale {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.spinner {
-    display: none;
-}
-
-.preloader-content p {
-    color: #666666;
-    font-size: 14px;
-    font-weight: 400;
-    letter-spacing: 2px;
+.preloader-logo {
+    font-size: 72px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 8px;
     text-transform: uppercase;
-    margin-top: 20px;
+    animation: logoReveal 1.5s ease forwards;
+    text-shadow: 0 0 30px rgba(88, 101, 242, 0.5);
+}
+
+@keyframes logoReveal {
+    0% { opacity: 0; transform: translateY(20px) scale(0.9); filter: blur(10px); }
+    50% { filter: blur(0); }
+    100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+.preloader-subtitle {
+    font-size: 18px;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 12px;
+    text-transform: uppercase;
+    margin-top: 8px;
+    animation: subtitleFade 2s ease forwards;
+    animation-delay: 0.3s;
+    opacity: 0;
+}
+
+@keyframes subtitleFade {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Спиннер */
+.preloader-spinner {
+    display: flex;
+    gap: 8px;
+    margin-top: 50px;
+}
+
+.preloader-spinner span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(88, 101, 242, 0.8);
+    animation: bounce 1.4s ease-in-out infinite;
+}
+
+.preloader-spinner span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.preloader-spinner span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.preloader-spinner span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+    0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+    40% { transform: scale(1); opacity: 1; }
+}
+
+.preloader-text {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-top: 24px;
+    animation: textPulse 2s ease-in-out infinite;
+}
+
+@keyframes textPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
 }
 
 /* Плавная прокрутка */
