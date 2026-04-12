@@ -43,13 +43,21 @@
 <body>
     <!-- Прелоадер -->
     <div class="preloader" id="preloader">
+        <canvas class="preloader-canvas" id="preloaderCanvas"></canvas>
         <div class="preloader-content">
-            <div class="preloader-logo">CS2</div>
-            <div class="preloader-subtitle">PRO ACADEMY</div>
-            <div class="preloader-spinner">
-                <span></span><span></span><span></span>
+            <div class="preloader-ring">
+                <div class="ring-circle"></div>
+                <div class="ring-circle"></div>
+                <div class="ring-circle"></div>
             </div>
-            <div class="preloader-text">Загрузка...</div>
+            <div class="preloader-logo">
+                <span class="logo-c">C</span><span class="logo-s">S</span><span class="logo-2">2</span>
+            </div>
+            <div class="preloader-subtitle">PRO ACADEMY</div>
+            <div class="preloader-progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="preloader-text">Загрузка</div>
         </div>
     </div>
 
