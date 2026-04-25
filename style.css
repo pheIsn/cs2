@@ -2735,25 +2735,28 @@ a, button, .player-card, .social-link, .share-btn, .share-site-btn,
     min-height: 100dvh;
 }
 
-/* Safe-area для фиксированных элементов по краям */
-@supports (padding: max(0px)) {
-    .secret-btn, .share-site-btn, .language-switcher {
-        top: max(18px, env(safe-area-inset-top));
-    }
-    .secret-btn { right: max(16px, env(safe-area-inset-right)); }
-    .share-site-btn { right: calc(max(16px, env(safe-area-inset-right)) + 54px); }
-    .language-switcher { right: calc(max(16px, env(safe-area-inset-right)) + 108px); }
-    .scroll-top {
-        bottom: max(16px, env(safe-area-inset-bottom));
-        right: max(16px, env(safe-area-inset-right));
-    }
-    .music-control {
-        bottom: max(16px, env(safe-area-inset-bottom));
-        left: max(16px, env(safe-area-inset-left));
-    }
-    .visitor-counter {
-        top: max(16px, env(safe-area-inset-top));
-        left: max(16px, env(safe-area-inset-left));
+/* Safe-area для фиксированных элементов по краям — только на мобильных,
+   чтобы не переопределять оригинальные 30px-отступы на десктопе/планшете */
+@media (max-width: 768px) {
+    @supports (padding: max(0px)) {
+        .secret-btn, .share-site-btn, .language-switcher {
+            top: max(18px, env(safe-area-inset-top));
+        }
+        .secret-btn { right: max(16px, env(safe-area-inset-right)); }
+        .share-site-btn { right: calc(max(16px, env(safe-area-inset-right)) + 54px); }
+        .language-switcher { right: calc(max(16px, env(safe-area-inset-right)) + 108px); }
+        .scroll-top {
+            bottom: max(16px, env(safe-area-inset-bottom));
+            right: max(16px, env(safe-area-inset-right));
+        }
+        .music-control {
+            bottom: max(16px, env(safe-area-inset-bottom));
+            left: max(16px, env(safe-area-inset-left));
+        }
+        .visitor-counter {
+            top: max(16px, env(safe-area-inset-top));
+            left: max(16px, env(safe-area-inset-left));
+        }
     }
 }
 
