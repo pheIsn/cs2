@@ -1,51 +1,90 @@
-/* Супер красивый прелоадер */
+/* ============================================================
+   Прелоадер — тактический HUD в стиле CS2
+   ============================================================ */
 .preloader {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #000000;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at center, #0a0f1e 0%, #050812 55%, #000000 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 10001;
-    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
+    color: #e8eefc;
 }
 
 .preloader-canvas {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
     z-index: 0;
+    opacity: 0.7;
 }
 
+/* Тонкая сетка на фоне */
+.preloader-grid {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image:
+        linear-gradient(rgba(88, 166, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(88, 166, 255, 0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+    animation: gridShift 12s linear infinite;
+}
+
+@keyframes gridShift {
+    0%   { background-position: 0 0, 0 0; }
+    100% { background-position: 48px 48px, 48px 48px; }
+}
+
+/* Тонкие сканлайны для CRT-эффекта */
+.preloader-scanlines {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.025) 0px,
+        rgba(255, 255, 255, 0.025) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+    mix-blend-mode: overlay;
+}
+
+/* Мягкое голубое свечение по центру */
 .preloader::after {
     content: '';
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(88, 101, 242, 0.08) 0%, transparent 70%);
+    width: 620px;
+    height: 620px;
+    background: radial-gradient(circle, rgba(88, 166, 255, 0.12) 0%, transparent 70%);
     border-radius: 50%;
     animation: centerGlow 4s ease-in-out infinite;
     z-index: 0;
+    filter: blur(4px);
 }
 
 @keyframes centerGlow {
-    0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.3; }
-    50% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.6; }
+    0%, 100% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.45; }
+    50%      { transform: translate(-50%, -50%) scale(1.2);  opacity: 0.8; }
 }
 
 .preloader.hidden {
     opacity: 0;
     pointer-events: none;
-    transform: scale(1.05);
+    transform: scale(1.04);
+    filter: blur(2px);
 }
 
 .preloader-content {
@@ -55,126 +94,212 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    z-index: 1;
+    z-index: 3;
+    padding: 24px;
+    width: min(520px, 90vw);
 }
 
-/* Анимированные кольца */
-.preloader-ring {
+/* ---- Угловые скобки HUD вокруг контента ---- */
+.hud-corner {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border: 2px solid rgba(88, 166, 255, 0.9);
+    box-shadow: 0 0 12px rgba(88, 166, 255, 0.35);
+    opacity: 0;
+    animation: hudCornerIn 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.hud-corner--tl { top: 0;    left: 0;    border-right: 0; border-bottom: 0; animation-delay: 0.1s; }
+.hud-corner--tr { top: 0;    right: 0;   border-left: 0;  border-bottom: 0; animation-delay: 0.2s; }
+.hud-corner--bl { bottom: 0; left: 0;    border-right: 0; border-top: 0;    animation-delay: 0.3s; }
+.hud-corner--br { bottom: 0; right: 0;   border-left: 0;  border-top: 0;    animation-delay: 0.4s; }
+
+@keyframes hudCornerIn {
+    from { opacity: 0; transform: scale(0.6); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+/* ---- Прицел-ретикл ---- */
+.preloader-reticle {
     position: relative;
-    width: 180px;
-    height: 180px;
-    margin-bottom: 40px;
+    width: 168px;
+    height: 168px;
+    margin-bottom: 28px;
+    filter: drop-shadow(0 0 10px rgba(255, 138, 0, 0.35));
 }
 
-.ring-circle {
+.reticle-ring {
     position: absolute;
     border-radius: 50%;
-    border: 2px solid transparent;
-    animation: ringRotate 3s linear infinite;
+    border: 1.5px solid transparent;
 }
 
-.ring-circle:nth-child(1) {
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-top-color: rgba(88, 101, 242, 0.9);
-    border-bottom-color: rgba(88, 101, 242, 0.3);
-    box-shadow: 0 0 20px rgba(88, 101, 242, 0.4), inset 0 0 20px rgba(88, 101, 242, 0.1);
-    animation-duration: 2.5s;
+.reticle-ring--outer {
+    inset: 0;
+    border-top-color: rgba(255, 138, 0, 0.95);
+    border-right-color: rgba(255, 138, 0, 0.25);
+    border-bottom-color: rgba(255, 138, 0, 0.55);
+    box-shadow: 0 0 16px rgba(255, 138, 0, 0.35);
+    animation: reticleSpin 3.2s linear infinite;
 }
 
-.ring-circle:nth-child(2) {
-    top: 15px;
-    left: 15px;
-    right: 15px;
-    bottom: 15px;
-    border-left-color: rgba(138, 43, 226, 0.9);
-    border-right-color: rgba(138, 43, 226, 0.3);
-    box-shadow: 0 0 15px rgba(138, 43, 226, 0.4), inset 0 0 15px rgba(138, 43, 226, 0.1);
-    animation-duration: 3s;
-    animation-direction: reverse;
+.reticle-ring--mid {
+    inset: 22px;
+    border: 1px dashed rgba(88, 166, 255, 0.55);
+    animation: reticleSpin 6s linear infinite reverse;
 }
 
-.ring-circle:nth-child(3) {
-    top: 30px;
-    left: 30px;
-    right: 30px;
-    bottom: 30px;
-    border-top-color: rgba(255, 107, 53, 0.9);
-    border-bottom-color: rgba(255, 107, 53, 0.3);
-    box-shadow: 0 0 10px rgba(255, 107, 53, 0.4), inset 0 0 10px rgba(255, 107, 53, 0.1);
-    animation-duration: 2s;
+.reticle-ring--inner {
+    inset: 50px;
+    border-top-color: rgba(88, 166, 255, 0.9);
+    border-left-color: rgba(88, 166, 255, 0.3);
+    box-shadow: 0 0 10px rgba(88, 166, 255, 0.35);
+    animation: reticleSpin 2s linear infinite;
 }
 
-@keyframes ringRotate {
-    0% { transform: rotate(0deg); }
+/* Перекрестие прицела */
+.reticle-cross {
+    position: absolute;
+    background: linear-gradient(90deg, transparent, rgba(255, 138, 0, 0.85), transparent);
+    border-radius: 2px;
+    box-shadow: 0 0 6px rgba(255, 138, 0, 0.6);
+}
+.reticle-cross--h { top: 50%; left: 10%; right: 10%; height: 1.5px; transform: translateY(-50%); }
+.reticle-cross--v {
+    left: 50%; top: 10%; bottom: 10%; width: 1.5px; transform: translateX(-50%);
+    background: linear-gradient(180deg, transparent, rgba(255, 138, 0, 0.85), transparent);
+}
+
+.reticle-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    background: #ff8a00;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px rgba(255, 138, 0, 0.85), 0 0 20px rgba(255, 138, 0, 0.4);
+    animation: reticlePulse 1.4s ease-in-out infinite;
+}
+
+@keyframes reticleSpin {
+    0%   { transform: rotate(0deg);   }
     100% { transform: rotate(360deg); }
 }
 
-/* Логотип с анимацией каждой буквы */
+@keyframes reticlePulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1);   opacity: 1;   }
+    50%      { transform: translate(-50%, -50%) scale(1.4); opacity: 0.7; }
+}
+
+/* ---- Логотип CS2 ---- */
 .preloader-logo {
-    font-size: 96px;
+    font-size: 72px;
     font-weight: 800;
     display: flex;
-    gap: 4px;
-    margin-bottom: 16px;
-    filter: drop-shadow(0 0 40px rgba(88, 101, 242, 0.6));
+    gap: 2px;
+    margin-bottom: 6px;
+    letter-spacing: 2px;
+    filter: drop-shadow(0 0 28px rgba(88, 166, 255, 0.55));
 }
 
 .logo-c, .logo-s, .logo-2 {
     display: inline-block;
     color: #ffffff;
     opacity: 0;
-    transform: translateY(40px) rotateX(90deg);
-    animation: letterReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    transform: translateY(14px);
+    animation: letterReveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-.logo-c { animation-delay: 0.2s; }
-.logo-s { animation-delay: 0.4s; }
-.logo-2 { 
-    animation-delay: 0.6s;
-    background: linear-gradient(135deg, #5865F2, #8A2BE2);
+.logo-c { animation-delay: 0.55s; }
+.logo-s { animation-delay: 0.7s; }
+.logo-2 {
+    animation-delay: 0.85s;
+    background: linear-gradient(135deg, #ff8a00 0%, #ffd27d 60%, #ff8a00 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    text-shadow: 0 0 20px rgba(255, 138, 0, 0.25);
 }
 
 @keyframes letterReveal {
-    0% { opacity: 0; transform: translateY(40px) rotateX(90deg); filter: blur(10px); }
-    100% { opacity: 1; transform: translateY(0) rotateX(0); filter: blur(0); }
+    0%   { opacity: 0; transform: translateY(14px); filter: blur(6px); }
+    100% { opacity: 1; transform: translateY(0);    filter: blur(0);   }
 }
 
-/* Подзаголовок */
+/* ---- Подзаголовок ---- */
 .preloader-subtitle {
-    font-size: 14px;
-    font-weight: 400;
-    color: rgba(255, 255, 255, 0.5);
-    letter-spacing: 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(200, 220, 255, 0.75);
+    letter-spacing: 10px;
     text-transform: uppercase;
     opacity: 0;
-    animation: subtitleSlide 1s ease forwards;
+    animation: subtitleSlide 0.6s ease forwards;
     animation-delay: 1s;
-    margin-bottom: 50px;
+    margin-bottom: 32px;
+    padding-left: 10px;
 }
 
 @keyframes subtitleSlide {
-    0% { opacity: 0; transform: translateY(20px); letter-spacing: 24px; }
-    100% { opacity: 1; transform: translateY(0); letter-spacing: 16px; }
+    0%   { opacity: 0; transform: translateY(10px); letter-spacing: 16px; }
+    100% { opacity: 1; transform: translateY(0);    letter-spacing: 10px; }
 }
 
-/* Прогресс-бар */
-.preloader-progress {
-    width: 200px;
-    height: 2px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 1px;
-    overflow: hidden;
-    margin-bottom: 20px;
+/* ---- Подпись над прогрессом ---- */
+.preloader-progress-row {
+    width: min(280px, 70vw);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+    font-family: "JetBrains Mono", Consolas, "SF Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: rgba(88, 166, 255, 0.85);
     opacity: 0;
     animation: fadeIn 0.5s ease forwards;
     animation-delay: 0.8s;
 }
+
+.preloader-progress-label {
+    text-transform: uppercase;
+}
+
+.preloader-progress-value {
+    color: #ff8a00;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 10px rgba(255, 138, 0, 0.45);
+}
+
+/* ---- Прогресс-бар ---- */
+.preloader-progress {
+    width: min(280px, 70vw);
+    height: 3px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+    animation-delay: 0.85s;
+    position: relative;
+}
+
+.preloader-progress::before,
+.preloader-progress::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    width: 2px;
+    height: 9px;
+    background: rgba(88, 166, 255, 0.8);
+    box-shadow: 0 0 6px rgba(88, 166, 255, 0.5);
+}
+.preloader-progress::before { left: 0; }
+.preloader-progress::after  { right: 0; }
 
 @keyframes fadeIn {
     to { opacity: 1; }
@@ -183,41 +308,65 @@
 .progress-bar {
     width: 0%;
     height: 100%;
-    background: linear-gradient(90deg, #5865F2, #8A2BE2, #FF6B35);
-    border-radius: 1px;
-    animation: progressFill 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    animation-delay: 0.5s;
-    box-shadow: 0 0 10px rgba(88, 101, 242, 0.8);
+    background: linear-gradient(90deg, rgba(88, 166, 255, 0.9) 0%, #ff8a00 100%);
+    border-radius: 2px;
+    box-shadow:
+        0 0 10px rgba(255, 138, 0, 0.75),
+        0 0 20px rgba(88, 166, 255, 0.35);
+    transition: width 0.18s ease-out;
+    position: relative;
 }
 
-@keyframes progressFill {
-    0% { width: 0%; }
-    20% { width: 25%; }
-    50% { width: 60%; }
-    80% { width: 85%; }
-    100% { width: 100%; }
-}
-
-/* Текст загрузки */
-.preloader-text {
-    color: rgba(255, 255, 255, 0.4);
-    font-size: 11px;
-    font-weight: 300;
-    letter-spacing: 6px;
-    text-transform: uppercase;
-    animation: textDots 1.5s steps(4) infinite;
-}
-
-.preloader-text::after {
+.progress-bar::after {
     content: '';
-    animation: dots 1.5s steps(4) infinite;
+    position: absolute;
+    top: -1px;
+    right: -2px;
+    width: 4px;
+    height: calc(100% + 2px);
+    background: #ffffff;
+    box-shadow: 0 0 10px #ffffff, 0 0 18px #ff8a00;
+    border-radius: 1px;
+    opacity: 0.9;
 }
 
-@keyframes dots {
-    0% { content: ''; }
-    25% { content: '.'; }
-    50% { content: '..'; }
-    75% { content: '...'; }
+/* ---- Статус ---- */
+.preloader-text {
+    color: rgba(200, 220, 255, 0.65);
+    font-family: "JetBrains Mono", Consolas, "SF Mono", monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    min-height: 14px;
+    position: relative;
+    padding-left: 14px;
+}
+
+.preloader-text::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    background: #37d67a;
+    border-radius: 50%;
+    transform: translateY(-50%);
+    box-shadow: 0 0 8px rgba(55, 214, 122, 0.8);
+    animation: statusBlink 1.1s ease-in-out infinite;
+}
+
+@keyframes statusBlink {
+    0%, 100% { opacity: 1;   transform: translateY(-50%) scale(1);   }
+    50%      { opacity: 0.3; transform: translateY(-50%) scale(0.7); }
+}
+
+/* Когда прелоадер завершён */
+.preloader.hidden .preloader-text::before {
+    background: #ff8a00;
+    box-shadow: 0 0 10px rgba(255, 138, 0, 0.9);
+    animation: none;
 }
 
 /* Плавная прокрутка */
@@ -2426,28 +2575,39 @@ body.mobile-device .player-stats-graphs {
 
 /* Адаптив для телефонов */
 @media (max-width: 480px) {
-    /* Прелоадер для мобильных */
-    .preloader-ring {
+    /* Прелоадер для мобильных: компактнее и без тяжёлых эффектов */
+    .preloader-reticle {
         width: 130px;
         height: 130px;
-        margin-bottom: 30px;
+        margin-bottom: 22px;
     }
 
     .preloader-logo {
-        font-size: 64px;
-        margin-bottom: 12px;
+        font-size: 52px;
+        letter-spacing: 1px;
     }
 
     .preloader-subtitle {
-        font-size: 11px;
-        letter-spacing: 10px;
-        margin-bottom: 40px;
+        font-size: 10px;
+        letter-spacing: 8px;
+        margin-bottom: 22px;
+        padding-left: 8px;
     }
 
+    .preloader-progress-row,
     .preloader-progress {
-        width: 160px;
-        margin-bottom: 16px;
+        width: min(240px, 75vw);
     }
+
+    .preloader-progress-row { font-size: 10px; letter-spacing: 2px; }
+
+    .preloader-text { font-size: 10px; letter-spacing: 3px; }
+
+    .hud-corner { width: 22px; height: 22px; }
+
+    .preloader-grid { background-size: 32px 32px; }
+
+    .preloader::after { width: 360px; height: 360px; }
 
     .container {
         padding: 0 16px;

@@ -41,23 +41,41 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Прелоадер -->
+    <!-- Прелоадер (CS2 tactical HUD) -->
     <div class="preloader" id="preloader">
         <canvas class="preloader-canvas" id="preloaderCanvas"></canvas>
+        <div class="preloader-scanlines" aria-hidden="true"></div>
+        <div class="preloader-grid" aria-hidden="true"></div>
         <div class="preloader-content">
-            <div class="preloader-ring">
-                <div class="ring-circle"></div>
-                <div class="ring-circle"></div>
-                <div class="ring-circle"></div>
+            <!-- Угловые скобки HUD -->
+            <div class="hud-corner hud-corner--tl" aria-hidden="true"></div>
+            <div class="hud-corner hud-corner--tr" aria-hidden="true"></div>
+            <div class="hud-corner hud-corner--bl" aria-hidden="true"></div>
+            <div class="hud-corner hud-corner--br" aria-hidden="true"></div>
+
+            <!-- Прицел-ретикл -->
+            <div class="preloader-reticle" aria-hidden="true">
+                <div class="reticle-ring reticle-ring--outer"></div>
+                <div class="reticle-ring reticle-ring--mid"></div>
+                <div class="reticle-ring reticle-ring--inner"></div>
+                <div class="reticle-cross reticle-cross--h"></div>
+                <div class="reticle-cross reticle-cross--v"></div>
+                <div class="reticle-dot"></div>
             </div>
-            <div class="preloader-logo">
+
+            <div class="preloader-logo" aria-label="CS2">
                 <span class="logo-c">C</span><span class="logo-s">S</span><span class="logo-2">2</span>
             </div>
             <div class="preloader-subtitle">PRO ACADEMY</div>
+
+            <div class="preloader-progress-row">
+                <span class="preloader-progress-label">LOADING</span>
+                <span class="preloader-progress-value" id="progressValue">0%</span>
+            </div>
             <div class="preloader-progress">
                 <div class="progress-bar" id="progressBar"></div>
             </div>
-            <div class="preloader-text">Загрузка</div>
+            <div class="preloader-text" id="preloaderStatus">ИНИЦИАЛИЗАЦИЯ</div>
         </div>
     </div>
 
