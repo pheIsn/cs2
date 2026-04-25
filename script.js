@@ -17,16 +17,18 @@ const closeSound = new Audio('music/close.mp3');
 closeSound.volume = 0.3;
 
 // Прелоадер с частицами на canvas
+let preloaderAnimRunning = true;
 (function initPreloader() {
     const canvas = document.getElementById('preloaderCanvas');
     if (!canvas) return;
-    
+
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    
+
     const particles = [];
-    const particleCount = 60;
+    const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const particleCount = isMobileUA ? 24 : 60;
     
     class Particle {
         constructor() {
@@ -87,17 +89,18 @@ closeSound.volume = 0.3;
     }
     
     function animate() {
+        if (!preloaderAnimRunning) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
+
         particles.forEach(p => {
             p.update();
             p.draw();
         });
-        
+
         connectParticles();
         requestAnimationFrame(animate);
     }
-    
+
     animate();
     
     window.addEventListener('resize', () => {
@@ -112,7 +115,10 @@ window.addEventListener('load', function() {
         const preloader = document.getElementById('preloader');
         if (preloader) {
             preloader.classList.add('hidden');
-            setTimeout(() => preloader.remove(), 600);
+            setTimeout(() => {
+                preloaderAnimRunning = false;
+                preloader.remove();
+            }, 600);
         }
     }, 3000); // 3 секунды
 });
@@ -550,7 +556,10 @@ function createParticles() {
     });
 }
 
-createParticles();
+// Не крутим тяжёлый canvas с частицами на мобильных — экономим батарею и FPS
+if (!document.body.classList.contains('mobile-device')) {
+    createParticles();
+}
 
 // Маппинг аватарок
 const avatarMapping = {

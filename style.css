@@ -2688,3 +2688,277 @@ body.mobile-device .player-stats-graphs {
         padding: 24px 16px;
     }
 }
+/* ============================================================
+   Мобильная оптимизация (добавлено)
+   Цели: читаемость, тап-таргеты, safe-area, производительность
+   ============================================================ */
+
+/* Без горизонтального скролла и с управляемым ресайзом шрифтов */
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+html, body {
+    overscroll-behavior-y: contain;
+}
+
+/* Убираем стандартную синюю вспышку при тапе на iOS/Android */
+a, button, .player-card, .social-link, .share-btn, .share-site-btn,
+.secret-btn, .music-control, .language-switcher, .scroll-top,
+.discord-button, .discord-cta-button, .close {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+/* Курсоры вида move/* бессмысленны на сенсорных экранах */
+@media (hover: none) and (pointer: coarse) {
+    body, *,
+    .modal-content,
+    .player-achievements p, .modal-achievements p {
+        cursor: auto !important;
+    }
+    a, button, .player-card, .close, .social-link, .share-btn, .share-site-btn,
+    .secret-btn, .music-control, .volume-slider, .scroll-top, .language-switcher,
+    .title, header button, .discord-button, .discord-cta-button,
+    .player-avatar img, .modal-avatar img, .steam-link, .steam-link img {
+        cursor: pointer !important;
+    }
+}
+
+/* Поддержка iOS «100vh» через dvh с фоллбэком */
+.preloader,
+.intro-screen {
+    height: 100vh;
+    height: 100dvh;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+/* Safe-area для фиксированных элементов по краям */
+@supports (padding: max(0px)) {
+    .secret-btn, .share-site-btn, .language-switcher {
+        top: max(18px, env(safe-area-inset-top));
+    }
+    .secret-btn { right: max(16px, env(safe-area-inset-right)); }
+    .share-site-btn { right: calc(max(16px, env(safe-area-inset-right)) + 54px); }
+    .language-switcher { right: calc(max(16px, env(safe-area-inset-right)) + 108px); }
+    .scroll-top {
+        bottom: max(16px, env(safe-area-inset-bottom));
+        right: max(16px, env(safe-area-inset-right));
+    }
+    .music-control {
+        bottom: max(16px, env(safe-area-inset-bottom));
+        left: max(16px, env(safe-area-inset-left));
+    }
+    .visitor-counter {
+        top: max(16px, env(safe-area-inset-top));
+        left: max(16px, env(safe-area-inset-left));
+    }
+}
+
+/* Улучшения на мобильных: читаемость и плотность */
+@media (max-width: 768px) {
+    /* Фон сильно приглушаем — чтобы не забивал текст «О команде» */
+    body::after {
+        opacity: 0.08;
+        background-attachment: scroll;
+    }
+
+    /* Чуть менее разреженный заголовок — помещается в одну строку чаще */
+    .title {
+        letter-spacing: 3px;
+        word-break: normal;
+        overflow-wrap: break-word;
+    }
+
+    header {
+        padding: 60px 0 24px;
+        margin-bottom: 28px;
+    }
+
+    /* Секция «О команде» — фон/паддинги удобнее для чтения */
+    .about-section {
+        padding: 28px 18px 32px;
+        margin: 0 auto 48px;
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 10px;
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+    }
+
+    .section-title {
+        font-size: 26px;
+        letter-spacing: 3px;
+        margin-bottom: 28px;
+    }
+
+    .about-text {
+        font-size: 15px;
+        line-height: 1.65;
+    }
+
+    .about-achievements {
+        gap: 22px;
+        margin-top: 14px;
+    }
+
+    .achievement-icon { font-size: 28px; }
+    .achievement-text { font-size: 11px; }
+
+    /* Достижения в карточке/модалке — компактнее и читабельнее */
+    .player-achievements p,
+    .modal-achievements p {
+        line-height: 1.55;
+    }
+
+    /* Тап-таргеты: минимум 44x44 для соц.ссылок */
+    .social-link, .share-btn {
+        width: 44px;
+        height: 44px;
+    }
+    .social-link img, .share-btn img, .share-btn svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    /* FACEIT-сетка: 3 колонки слишком тесно на телефоне */
+    .faceit-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    .faceit-stats {
+        padding: 16px;
+    }
+    .faceit-stat-value { font-size: 18px; }
+
+    /* Модалка — скроллится пальцем, без эффекта «move» */
+    .modal-content {
+        max-height: 90vh;
+        max-height: 90dvh;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Чуть менее агрессивный backdrop-blur — экономит GPU на мобильных */
+    .modal-content { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+    .player-card { backdrop-filter: none; -webkit-backdrop-filter: none; }
+
+    /* Discord-CTA компактнее */
+    .discord-cta {
+        padding: 32px 18px;
+        margin: 32px auto;
+        border-width: 2px;
+        border-radius: 12px;
+    }
+    .discord-cta-title {
+        font-size: 24px;
+        letter-spacing: 2px;
+        margin-bottom: 14px;
+    }
+    .discord-cta-text {
+        font-size: 15px;
+        line-height: 1.55;
+        margin-bottom: 22px;
+    }
+    .discord-cta-button {
+        padding: 12px 24px;
+        font-size: 15px;
+        min-height: 44px;
+    }
+
+    /* Футер — без «прыжка» текста */
+    .footer { padding: 28px 16px; margin-top: 32px; }
+    .footer-text { font-size: 11px; line-height: 1.55; }
+    .footer-discord { flex-direction: column; gap: 12px; }
+    .discord-text { font-size: 13px; }
+    .discord-button { min-height: 44px; display: inline-flex; align-items: center; }
+
+    /* Удаляем тяжёлый hover-эффект на сенсорных устройствах */
+    .player-card:hover {
+        transform: none;
+        box-shadow: none;
+        border-left: none;
+        background: rgba(255, 255, 255, 0.08);
+        border-bottom-color: rgba(255, 255, 255, 0.15);
+    }
+    .player-card:hover .player-avatar {
+        border-color: rgba(255, 255, 255, 0.1);
+        box-shadow: none;
+    }
+    .player-card:hover .player-avatar::after { opacity: 0; }
+    .player-card:hover .player-avatar img { transform: none; }
+}
+
+/* Маленькие телефоны */
+@media (max-width: 480px) {
+    body::after { opacity: 0.06; }
+
+    .title {
+        font-size: 22px;
+        letter-spacing: 2px;
+    }
+
+    .section-title {
+        font-size: 22px;
+        letter-spacing: 2px;
+    }
+
+    .about-section {
+        padding: 22px 14px 26px;
+        margin-bottom: 36px;
+    }
+    .about-text { font-size: 14.5px; }
+
+    /* Сократим вертикальный ритм, чтобы страница не «гармонь» */
+    .players-list { gap: 14px; padding-bottom: 48px; }
+
+    /* Верхние иконки плотнее — и точно влезают на 320/360px */
+    .secret-btn, .share-site-btn, .language-switcher {
+        width: 40px;
+        height: 40px;
+    }
+    .secret-btn { right: 14px; }
+    .share-site-btn { right: 60px; }
+    .language-switcher { right: 106px; font-size: 13px; }
+
+    .discord-cta-title { font-size: 22px; }
+    .discord-cta-text { font-size: 14px; }
+    .discord-cta-button { padding: 12px 22px; font-size: 14px; }
+
+    /* Volume-панель не должна выходить за край экрана слева */
+    .volume-panel {
+        min-width: 148px;
+        max-width: calc(100vw - 32px);
+    }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 360px) {
+    .title { font-size: 20px; letter-spacing: 2px; }
+    .section-title { font-size: 20px; letter-spacing: 2px; margin-bottom: 22px; }
+    .about-section { padding: 20px 12px 24px; }
+
+    .secret-btn, .share-site-btn, .language-switcher {
+        width: 38px; height: 38px;
+    }
+    .share-site-btn { right: 58px; }
+    .language-switcher { right: 102px; }
+
+    .faceit-stats-grid { gap: 10px; }
+}
+
+/* Пользователь предпочитает меньше анимации */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Отключаем фоновый canvas с частицами на телефонах ради перформанса */
+body.mobile-device #particleCanvas {
+    display: none !important;
+}
