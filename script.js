@@ -17,16 +17,18 @@ const closeSound = new Audio('music/close.mp3');
 closeSound.volume = 0.3;
 
 // Прелоадер с частицами на canvas
+let preloaderAnimRunning = true;
 (function initPreloader() {
     const canvas = document.getElementById('preloaderCanvas');
     if (!canvas) return;
-    
+
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    
+
     const particles = [];
-    const particleCount = 60;
+    const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const particleCount = isMobileUA ? 24 : 60;
     
     class Particle {
         constructor() {
@@ -87,17 +89,18 @@ closeSound.volume = 0.3;
     }
     
     function animate() {
+        if (!preloaderAnimRunning) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
+
         particles.forEach(p => {
             p.update();
             p.draw();
         });
-        
+
         connectParticles();
         requestAnimationFrame(animate);
     }
-    
+
     animate();
     
     window.addEventListener('resize', () => {
@@ -106,16 +109,85 @@ closeSound.volume = 0.3;
     });
 })();
 
-// Прелоадер
-window.addEventListener('load', function() {
-    setTimeout(() => {
-        const preloader = document.getElementById('preloader');
-        if (preloader) {
-            preloader.classList.add('hidden');
-            setTimeout(() => preloader.remove(), 600);
+// Прелоадер — реальный прогресс + смена статусов
+(function runPreloader() {
+    const bar = document.getElementById('progressBar');
+    const value = document.getElementById('progressValue');
+    const status = document.getElementById('preloaderStatus');
+    if (!bar || !value || !status) return;
+
+    const stages = [
+        { at: 0,   text: 'ИНИЦИАЛИЗАЦИЯ' },
+        { at: 20,  text: 'ЗАГРУЗКА РЕСУРСОВ' },
+        { at: 45,  text: 'СИНХРОНИЗАЦИЯ FACEIT' },
+        { at: 70,  text: 'КОМПИЛЯЦИЯ ШЕЙДЕРОВ' },
+        { at: 90,  text: 'ПОДКЛЮЧЕНИЕ К СЕРВЕРУ' },
+        { at: 100, text: 'ГОТОВО' },
+    ];
+
+    let progress = 0;
+    let target = 70; // растём плавно до 70% пока страница ещё грузится
+    let lastStage = '';
+    const startedAt = performance.now();
+    const MIN_DURATION_MS = 2000; // показываем HUD минимум 2 секунды
+
+    function apply(p) {
+        const v = Math.max(0, Math.min(100, Math.round(p)));
+        bar.style.width = v + '%';
+        value.textContent = v + '%';
+        for (let i = stages.length - 1; i >= 0; i--) {
+            if (v >= stages[i].at) {
+                if (stages[i].text !== lastStage) {
+                    status.textContent = stages[i].text;
+                    lastStage = stages[i].text;
+                }
+                break;
+            }
         }
-    }, 3000); // 3 секунды
-});
+    }
+
+    const tick = setInterval(() => {
+        // Плавно: ~35% за первую секунду, ~60% за вторую
+        const step = (target - progress) * 0.035 + 0.15;
+        progress = Math.min(target, progress + step);
+        apply(progress);
+    }, 60);
+
+    // После window.load добиваем до 100%, но не раньше минимального времени
+    function finishLoad() {
+        target = 100;
+        const wait = Math.max(0, MIN_DURATION_MS - (performance.now() - startedAt));
+        setTimeout(() => {
+            const finishTick = setInterval(() => {
+                progress = Math.min(100, progress + 3);
+                apply(progress);
+                if (progress >= 100) {
+                    clearInterval(finishTick);
+                    clearInterval(tick);
+                    setTimeout(hidePreloader, 400);
+                }
+            }, 30);
+        }, wait);
+    }
+
+    function hidePreloader() {
+        const preloader = document.getElementById('preloader');
+        if (!preloader) return;
+        preloader.classList.add('hidden');
+        setTimeout(() => {
+            preloaderAnimRunning = false;
+            preloader.remove();
+        }, 600);
+    }
+
+    if (document.readyState === 'complete') {
+        finishLoad();
+    } else {
+        window.addEventListener('load', finishLoad);
+        // Защита: даже если load долго — не держим прелоадер больше 5 сек
+        setTimeout(finishLoad, 5000);
+    }
+})();
 
 // Анимированный счетчик статистики
 function animateCounter() {
@@ -550,7 +622,10 @@ function createParticles() {
     });
 }
 
-createParticles();
+// Не крутим тяжёлый canvas с частицами на мобильных — экономим батарею и FPS
+if (!document.body.classList.contains('mobile-device')) {
+    createParticles();
+}
 
 // Маппинг аватарок
 const avatarMapping = {
